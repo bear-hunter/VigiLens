@@ -1,0 +1,93 @@
+:root {
+  --card-bg: #2a2a3a;
+  --card-text: #e0e0e0;
+  --card-subtext: #a7a7b1;
+  --button-green: #1db954;
+}
+
+.incident-card {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease-in-out;
+  
+  /* --- KEY CHANGES FOR HORIZONTAL LAYOUT --- */
+  display: flex;
+  flex-direction: row; /* Aligns children (image and content) side-by-side */
+  align-items: stretch; /* Makes children the same height */
+}
+
+.incident-card:hover {
+  transform: translateY(-5px);
+}
+
+.incident-image-placeholder {
+  /* Give the image a fixed width and let it take the full height */
+  width: 200px;
+  height: auto; /* Resets the fixed height from the old design */
+  flex-shrink: 0; /* Prevents the image container from shrinking */
+
+  background-color: #1c1c1c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--card-subtext);
+  font-style: italic;
+}
+
+.incident-image {
+  width: 100%;
+  height: 100%; /* Fills the placeholder container */
+  object-fit: cover;
+}
+
+.incident-content {
+  padding: 20px;
+  
+  /* --- KEY CHANGES FOR CONTENT AREA --- */
+  flex-grow: 1; /* Allows this container to take up the remaining space */
+  display: flex;
+  flex-direction: column; /* Stacks the text and button vertically */
+}
+
+.incident-content h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 1.5rem;
+  color: var(--card-text);
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  color: var(--card-subtext);
+  font-size: 0.9rem;
+}
+
+.info-icon {
+  margin-right: 10px;
+  font-size: 1.1rem;
+}
+
+.review-button {
+  background-color: var(--button-green);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  
+  /* --- KEY CHANGE FOR BUTTON POSITIONING --- */
+  margin-top: auto; /* Pushes the button to the bottom of the card */
+  width: auto; /* Let padding define the width */
+  align-self: flex-start; /* Aligns button to the left */
+}
+
+.review-button:hover {
+  background-color: #1aa34a;
+}

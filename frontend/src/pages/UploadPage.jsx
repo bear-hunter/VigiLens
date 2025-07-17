@@ -1,118 +1,71 @@
-// src/pages/UploadPage.js
-import React, { useState } from "react";
-import { uploadVideo } from "../services/api";
-import {
-  Container,
-  Typography,
-  Button,
-  Box,
-  Alert,
-  LinearProgress,
-  Paper,
-} from "@mui/material";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import React, { useState, useRef } from 'react';
+import './UploadPage.css';
 
-function UploadPage() {
+const UploadPage = () => {
   const [selectedFile, setSelectedFile] = useState(null);
-  const [status, setStatus] = useState({ message: "", type: "" });
-  const [uploadProgress, setUploadProgress] = useState(0);
+  const fileInputRef = useRef(null);
 
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-    setStatus({ message: "", type: "" });
-    setUploadProgress(0);
+  const handleSelectClick = () => {
+    fileInputRef.current.click();
   };
 
-  const handleUpload = async () => {
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
+  const handleStartAnalysis = () => {
     if (!selectedFile) {
-      setStatus({ message: "Please select a file first.", type: "error" });
+      alert('Please select a video file first!');
       return;
     }
-
-    setStatus({
-      message: "Uploading and processing... This may take a while.",
-      type: "info",
-    });
-
-    try {
-      await uploadVideo(selectedFile, (progressEvent) => {
-        const percentCompleted = Math.round(
-          (progressEvent.loaded * 100) / progressEvent.total
-        );
-        setUploadProgress(percentCompleted);
-      });
-      setStatus({
-        message:
-          "Upload complete! The video is now being analyzed. Incidents will appear on the dashboard.",
-        type: "success",
-      });
-    } catch (error) {
-      setStatus({
-        message: "Upload failed. Please check the server and try again.",
-        type: "error",
-      });
-      console.error("Upload error:", error);
-    }
+    console.log('Starting analysis for:', selectedFile.name);
+    alert(`Starting analysis for: ${selectedFile.name}`);
   };
 
   return (
-    <Container maxWidth="md">
-      <Paper elevation={3} sx={{ padding: 4, textAlign: "center" }}>
-        <Typography variant="h4" gutterBottom>
-          Upload Surveillance Footage
-        </Typography>
-        <Typography variant="body1" color="textSecondary" sx={{ mb: 4 }}>
-          Select a video file to begin the post-event analysis.
-        </Typography>
+    <div className="upload-page">
+      {/* --- THIS IS THE NEW TITLE --- */}
+      <h1 className="page-header-title">Analyze the Incident</h1>
 
-        <Button
-          variant="contained"
-          component="label"
-          startIcon={<CloudUploadIcon />}
-          sx={{ mb: 2 }}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        style={{ display: 'none' }}
+        accept="video/mp4"
+      />
+
+      {/* Changed this to an h2 and gave it a new class name */}
+      <h2 className="upload-instruction">
+        Select a video to begin post-event analysis
+      </h2>
+
+      <div className="button-container">
+        <button
+          className="upload-btn select-btn"
+          onClick={handleSelectClick}
         >
           Select Video File
-          <input
-            type="file"
-            hidden
-            accept="video/*"
-            onChange={handleFileChange}
-          />
-        </Button>
-
-        {selectedFile && (
-          <Typography variant="body2" sx={{ mb: 2 }}>
-            File selected: <strong>{selectedFile.name}</strong>
-          </Typography>
-        )}
-
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleUpload}
-          disabled={!selectedFile || status.type === "info"}
-          size="large"
+        </button>
+        <button
+          className="upload-btn analyze-btn"
+          onClick={handleStartAnalysis}
+          disabled={!selectedFile}
         >
           Start Analysis
-        </Button>
+        </button>
+      </div>
 
-        {status.type === "info" && (
-          <Box sx={{ width: "100%", mt: 4 }}>
-            <LinearProgress variant="determinate" value={uploadProgress} />
-            <Typography variant="body2" sx={{ mt: 1 }}>
-              {uploadProgress}%
-            </Typography>
-          </Box>
-        )}
-
-        {status.message && (
-          <Alert severity={status.type} sx={{ mt: 4, textAlign: "left" }}>
-            {status.message}
-          </Alert>
-        )}
-      </Paper>
-    </Container>
+      {selectedFile && (
+        <p className="file-info">
+          Selected: <strong>{selectedFile.name}</strong>
+        </p>
+      )}
+    </div>
   );
-}
+};
 
 export default UploadPage;

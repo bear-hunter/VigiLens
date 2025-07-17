@@ -1,74 +1,54 @@
-// src/pages/DashboardPage.js
-import React, { useState, useEffect } from "react";
-import { getIncidents } from "../services/api";
-import {
-  Container,
-  Typography,
-  Grid,
-  CircularProgress,
-  Alert,
-  Paper,
-  Box,
-} from "@mui/material";
-import IncidentCard from "../components/dashboard/IncidentCard";
+import React from 'react';
+import IncidentCard from '../components/dashboard/IncidentCard.jsx';
+import { Link } from 'react-router-dom'; // Import Link
+import { FiPlus } from 'react-icons/fi'; // Import Plus icon
+import './DashboardPage.css';
 
-function DashboardPage() {
-  const [incidents, setIncidents] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const mockIncidents = [
+  {
+    id: 3,
+    timestamp: '7/17/2025, 7:42:54 PM',
+    cameraName: 'CAM-02-UPLOADED',
+    imageUrl: null,
+  },
+  {
+    id: 2,
+    timestamp: '7/17/2025, 7:40:30 PM',
+    cameraName: 'CAM-04-AISLE-3',
+    imageUrl: null,
+  },
+  {
+    id: 1,
+    timestamp: '7/17/2025, 7:40:30 PM',
+    cameraName: 'CAM-01-ENTRANCE',
+    imageUrl: null,
+  },
+];
 
-  useEffect(() => {
-    const fetchIncidents = async () => {
-      try {
-        const response = await getIncidents();
-        setIncidents(response.data);
-        setLoading(false);
-      } catch (err) {
-        setError("Failed to fetch incidents. The backend may be down.");
-        setLoading(false);
-        console.error(err);
-      }
-    };
-
-    fetchIncidents();
-    // Optional: poll for new incidents every 30 seconds
-    const interval = setInterval(fetchIncidents, 30000);
-    return () => clearInterval(interval);
-  }, []);
-
+const DashboardPage = () => {
   return (
-    <Container maxWidth="xl">
-      <Typography variant="h4" gutterBottom>
-        Incident Dashboard
-      </Typography>
-      {loading && (
-        <Box sx={{ display: "flex", justifyContent: "center", my: 5 }}>
-          <CircularProgress />
-        </Box>
-      )}
-      {error && <Alert severity="error">{error}</Alert>}
-      {!loading && !error && (
-        <>
-          {incidents.length === 0 ? (
-            <Paper sx={{ p: 4, textAlign: "center", mt: 4 }}>
-              <Typography variant="h6">No Incidents Detected</Typography>
-              <Typography color="textSecondary">
-                Upload a video to begin analysis.
-              </Typography>
-            </Paper>
-          ) : (
-            <Grid container spacing={3}>
-              {incidents.map((incident) => (
-                <Grid item key={incident.id} xs={12} sm={6} md={4} lg={3}>
-                  <IncidentCard incident={incident} />
-                </Grid>
-              ))}
-            </Grid>
-          )}
-        </>
-      )}
-    </Container>
+    <div className="dashboard-page">
+      <header className="dashboard-header">
+        <h1 className="dashboard-title">Incident Dashboard</h1>
+        <Link to="/upload" className="upload-button">
+          <FiPlus />
+          Upload
+        </Link>
+      </header>
+      
+      <div className="incidents-list">
+        {mockIncidents.map((incident) => (
+          <IncidentCard
+            key={incident.id}
+            id={incident.id}
+            timestamp={incident.timestamp}
+            cameraName={incident.cameraName}
+            imageUrl={incident.imageUrl}
+          />
+        ))}
+      </div>
+    </div>
   );
-}
+};
 
 export default DashboardPage;
