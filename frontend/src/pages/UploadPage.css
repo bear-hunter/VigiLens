@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: center; 
+    
   padding-top: 5rem; /* <<< TRY THIS VALUE */
   
   width: 100%;
@@ -10,73 +11,105 @@
   text-align: center;
 }
 
-
-/* --- ADD THIS NEW STYLE BLOCK --- */
 .page-header-title {
-  font-size: 2.2rem;
-  font-weight: 600;
-  color: #e0e0e0; /* A slightly softer white */
-  margin-bottom: 1rem; /* Space below this new title */
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #c0c0c0;
+  margin-bottom: 0.5rem;
 }
 
-/* --- RENAME THIS CLASS from .upload-title to .upload-instruction --- */
 .upload-instruction {
   font-size: 2.8rem;
   font-weight: 600;
   color: #ffffff;
   max-width: 500px;
   line-height: 1.3;
-  margin-bottom: 3rem;
+  margin-bottom: 2.5rem;
 }
+
+/* --- NEW: Container for the file list --- */
+.file-list-container {
+  width: 100%;
+  max-width: 600px;
+  max-height: 300px; /* Limit height to make it scrollable */
+  overflow-y: auto;   /* Add a scrollbar if content overflows */
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  margin-bottom: 2.5rem;
+  padding: 0.5rem;
+}
+
+/* --- NEW: Style for each row in the list --- */
+.file-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.file-list-item:last-child {
+  border-bottom: none;
+}
+
+.file-list-name {
+  color: #e0e0e0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Shorten long filenames with '...' */
+  margin-right: 1rem;
+}
+
+/* --- NEW: Style for the small 'X' button --- */
+.remove-file-btn {
+  background: transparent;
+  border: none;
+  color: #a7a7b1;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  line-height: 1;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.remove-file-btn:hover {
+  background-color: #c93434;
+  color: white;
+}
+/* ------------------------------------- */
 
 .button-container {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
-
-.button-container {
-  display: flex;
-  gap: 1.5rem; /* Space between the two buttons */
-}
-
-/* Base styles for both buttons to keep them consistent */
 .upload-btn {
-  padding: 1rem 2rem;
-  font-size: 1rem;
+  padding: 0.8rem 1.5rem;
+  font-size: 0.9rem;
   font-weight: 600;
   border: none;
-  border-radius: 14px; /* Creates the heavily rounded corners */
+  border-radius: 10px;
   cursor: pointer;
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .upload-btn:hover:not(:disabled) {
-  transform: translateY(-3px); /* Subtle lift effect on hover */
+  transform: translateY(-2px);
 }
 
-/* Styles for the purple "Select Video" button */
-.select-btn {
-  background-color: #7b4dff; /* The exact purple from your design */
+.select-btn, .select-more-btn {
+  background-color: #7b4dff;
   color: white;
 }
 
-/* Styles for the blue "Start Analysis" button */
 .analyze-btn {
-  background-color: #4a4aff; /* The exact blue from your design */
+  background-color: #4a4aff;
   color: white;
 }
 
-/* Styles for any disabled button */
 .upload-btn:disabled {
-  background-color: #3a3a4a; /* A muted, dark background */
-  color: #7a7a81;      /* Muted text color */
+  background-color: #3a3a4a;
+  color: #7a7a81;
   cursor: not-allowed;
-}
-
-/* Optional: To show the name of the selected file */
-.file-info {
-  margin-top: 2rem;
-  color: #a7a7b1;
-  font-size: 1rem;
 }
