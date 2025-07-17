@@ -1,106 +1,103 @@
 import React, { useState, useRef } from 'react';
+import { generateVideoThumbnail } from '../services/videoUtils.js';
 import './UploadPage.css';
-import { FiX } from 'react-icons/fi'; // Using a nice 'X' icon for removing
+import { FiVideo, FiX } from 'react-icons/fi';
 
 const UploadPage = () => {
-  // --- CHANGE 1: State is now an array to hold multiple files ---
-  const [selectedFiles, setSelectedFiles] = useState([]);
+  // State holds an array of objects: { file, thumbnailSrc }
+  const [filesData, setFilesData] = useState([]);
+  const [isDragActive, setIsDragActive] = useState(false);
   const fileInputRef = useRef(null);
 
-  const handleSelectClick = () => {
-    fileInputRef.current.click();
-  };
+  // This function processes new files from either drag-drop or selection
+  const processFiles = async (newFiles) => {
+    const fileList = Array.from(newFiles).filter(file => file.type.startsWith('video/'));
+    if(fileList.length === 0) return;
 
-  // --- CHANGE 2: Handle multiple incoming files and add them to the state ---
-  const handleFileChange = (event) => {
-    const newFiles = Array.from(event.target.files); // Convert FileList to a true array
-    if (newFiles.length > 0) {
-      // Append new files to the existing list
-      setSelectedFiles(prevFiles => [...prevFiles, ...newFiles]);
+    // Create initial state with a 'loading' status for thumbnails
+    const initialData = fileList.map(file => ({ file, thumbnailSrc: 'loading' }));
+    setFilesData(prevData => [...prevData, ...initialData]);
+
+    // Generate thumbnails for the new files
+    for (const file of fileList) {
+      try {
+        const thumb = await generateVideoThumbnail(file);
+        // Update the specific file's data with the generated thumbnail
+        setFilesData(prevData => prevData.map(data => 
+          data.file === file ? { ...data, thumbnailSrc: thumb } : data
+        ));
+      } catch (error) {
+        console.error("Error generating thumbnail for", file.name, error);
+        // Update state to show an error or a default thumbnail
+        setFilesData(prevData => prevData.map(data => 
+          data.file === file ? { ...data, thumbnailSrc: 'error' } : data
+        ));
+      }
     }
   };
-
-  // --- CHANGE 3: Remove a specific file from the array by its index ---
-  const handleRemoveFile = (indexToRemove) => {
-    setSelectedFiles(prevFiles => prevFiles.filter((_, index) => index !== indexToRemove));
+  
+  const handleDrag = (e) => { e.preventDefault(); e.stopPropagation(); setIsDragActive(true); };
+  const handleDragLeave = (e) => { e.preventDefault(); e.stopPropagation(); setIsDragActive(false); };
+  const handleDrop = (e) => {
+    e.preventDefault(); e.stopPropagation(); setIsDragActive(false);
+    if (e.dataTransfer.files) processFiles(e.dataTransfer.files);
   };
 
-  const handleStartAnalysis = () => {
-    if (selectedFiles.length === 0) return;
-    
-    const fileNames = selectedFiles.map(file => file.name).join(', ');
-    console.log('Starting analysis for:', fileNames);
-    alert(`Starting analysis for ${selectedFiles.length} file(s): ${fileNames}`);
+  const handleFileChange = (e) => {
+    if (e.target.files) processFiles(e.target.files);
+    // Reset file input to allow selecting the same file again after removing it
+    e.target.value = null;
+  };
+  
+  const handleRemoveFile = (indexToRemove) => {
+    setFilesData(prevData => prevData.filter((_, index) => index !== indexToRemove));
+  };
+  
+  const handleSelectClick = () => fileInputRef.current.click();
+  
+  const handleAnalyze = () => {
+    alert(`Analyzing ${filesData.length} file(s).`);
   };
 
   return (
-    <div className="upload-page">
-      <h1 className="page-header-title">Analyze the Incident</h1>
-
-      {/* --- CHANGE 4: Add the 'multiple' attribute to the input --- */}
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileChange}
-        style={{ display: 'none' }}
-        accept="video/mp4"
-        multiple // This allows selecting multiple files
-      />
-
-      {selectedFiles.length === 0 ? (
-        // State 1: No files are selected
-        <>
-          <h2 className="upload-instruction">
-            Select video(s) to begin post-event analysis
-          </h2>
-          <div className="button-container">
-            <button
-              className="upload-btn select-btn"
-              onClick={handleSelectClick}
-            >
-              Select Video Files
-            </button>
-            <button className="upload-btn" disabled={true}>
-              Start Analysis
-            </button>
-          </div>
-        </>
-      ) : (
-        // State 2: One or more files are selected
-        <>
-          {/* --- CHANGE 5: Display a scrollable list of files --- */}
-          <div className="file-list-container">
-            {selectedFiles.map((file, index) => (
-              <div key={`${file.name}-${index}`} className="file-list-item">
-                <span className="file-list-name">{file.name}</span>
-                <button 
-                  className="remove-file-btn" 
-                  onClick={() => handleRemoveFile(index)}
-                  aria-label={`Remove ${file.name}`}
-                >
-                  <FiX />
-                </button>
-              </div>
-            ))}
-          </div>
-
-          <div className="button-container">
-            {/* Add a button to select more files */}
-            <button
-              className="upload-btn select-more-btn"
-              onClick={handleSelectClick}
-            >
-              Add More Files
-            </button>
-            <button
-              className="upload-btn analyze-btn"
-              onClick={handleStartAnalysis}
-            >
-              Start Analysis ({selectedFiles.length})
-            </button>
-          </div>
-        </>
-      )}
+    <div className="upload-page-container">
+      <div className="upload-box">
+        {/* The 'multiple' attribute is key for batch selection */}
+        <input type="file" ref={fileInputRef} onChange={handleFileChange} style={{ display: 'none' }} accept="video/*" multiple />
+        <div className="upload-header"><h3>Upload a video to analyze</h3></div>
+        <div className="upload-body">
+          {filesData.length === 0 ? (
+            // State 1: No files selected -> Show drag & drop zone
+            <div className={`drag-drop-zone ${isDragActive ? 'active' : ''}`} onDragEnter={handleDrag} onDragOver={handleDrag} onDragLeave={handleDragLeave} onDrop={handleDrop}>
+              <div className="drag-drop-icon"><FiVideo /></div>
+              <p>Drag and drop video file(s) to upload</p>
+            </div>
+          ) : (
+            // State 2: Files are selected -> Show scrollable list with thumbnails
+            <div className="file-list-container">
+              {filesData.map((data, index) => (
+                <div key={`${data.file.name}-${index}`} className="file-list-item">
+                  <div className="thumbnail-container">
+                    {data.thumbnailSrc === 'loading' && <div className="thumbnail-loading-spinner"></div>}
+                    {data.thumbnailSrc !== 'loading' && data.thumbnailSrc !== 'error' && <img src={data.thumbnailSrc} alt={data.file.name} className="thumbnail-preview" />}
+                    {data.thumbnailSrc === 'error' && <div className="thumbnail-error"><FiVideo/></div>}
+                  </div>
+                  <span className="file-list-name">{data.file.name}</span>
+                  <button className="remove-file-btn" onClick={() => handleRemoveFile(index)}><FiX /></button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <div className="upload-footer">
+          <button className="page-btn select-btn" onClick={handleSelectClick}>
+            {filesData.length === 0 ? 'Select Video Files' : 'Add More Files'}
+          </button>
+          <button className="page-btn analyze-btn" onClick={handleAnalyze} disabled={filesData.length === 0}>
+            Analyze ({filesData.length})
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
