@@ -1,16 +1,17 @@
-# Core Flask and Web Server
+# backend/requirements.txt
+
+# Flask and Web Server Extensions
 Flask
-python-dotenv         # Manages environment variables from a .env file for configuration
-Flask-Cors            # Handles Cross-Origin Resource Sharing to allow the React app to communicate with the backend
+python-dotenv
+Flask-Cors
+Flask-SQLAlchemy
+Werkzeug
 
 # AI and Machine Learning
-ultralytics           # The official package for running YOLO models, including YOLOv11-pose
-torch                 # The core deep learning framework required by Ultralytics
-torchvision           # Companion library for PyTorch for vision tasks
+ultralytics
+torch
+torchvision
 
 # Video and Data Processing
-opencv-python-headless # For all video capture and frame processing (headless version is best for servers)
-numpy                 # For efficient numerical operations on pose keypoint data
-
-# Database
-Flask-SQLAlchemy      # For creating and managing the incident log database
+opencv-python-headless
+numpy
