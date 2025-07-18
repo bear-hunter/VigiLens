@@ -1,42 +1,41 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* frontend/src/App.css */
+:root {
+  --main-bg: #12121c;
+  --text-primary: #e0e0e0;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* Apply a more modern box-sizing model to all elements */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  background-color: var(--main-bg);
+  color: var(--text-primary);
+  overflow: hidden; /* Prevent the body itself from ever scrolling */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.app-container {
+  display: flex;
+  height: 100vh; /* Fill the entire screen height */
+  width: 100vw; /* Fill the entire screen width */
 }
 
-.card {
-  padding: 2em;
-}
+/* The main content area that will hold the current page */
+.main-content {
+  flex-grow: 1; /* Allow this container to take up all available space */
 
-.read-the-docs {
-  color: #888;
+  /* --- THIS IS THE KEY FIX --- */
+  /* This container will handle the scrolling for the page content */
+  overflow-y: auto;
+
+  /* We remove the fixed height from here. It will now be determined by its parent. */
+  height: 100%;
+
+  /* Add padding directly to the scrolling container */
+  padding: 2rem 3rem;
 }

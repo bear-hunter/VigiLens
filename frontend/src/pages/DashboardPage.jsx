@@ -1,18 +1,12 @@
-// src/pages/DashboardPage.js
+// frontend/src/pages/DashboardPage.jsx
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { FiPlus } from "react-icons/fi";
 import { getIncidents } from "../services/api";
-import {
-  Container,
-  Typography,
-  Grid,
-  CircularProgress,
-  Alert,
-  Paper,
-  Box,
-} from "@mui/material";
-import IncidentCard from "../components/dashboard/IncidentCard";
+import IncidentCard from "../components/dashboard/IncidentCard.jsx";
+import "./DashboardPage.css";
 
-function DashboardPage() {
+const DashboardPage = () => {
   const [incidents, setIncidents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -20,55 +14,47 @@ function DashboardPage() {
   useEffect(() => {
     const fetchIncidents = async () => {
       try {
+        setLoading(true);
         const response = await getIncidents();
         setIncidents(response.data);
-        setLoading(false);
       } catch (err) {
-        setError("Failed to fetch incidents. The backend may be down.");
-        setLoading(false);
+        setError("Failed to fetch incidents. Is the backend server running?");
         console.error(err);
+      } finally {
+        setLoading(false);
       }
     };
-
     fetchIncidents();
-    // Optional: poll for new incidents every 30 seconds
-    const interval = setInterval(fetchIncidents, 30000);
-    return () => clearInterval(interval);
   }, []);
 
   return (
-    <Container maxWidth="xl">
-      <Typography variant="h4" gutterBottom>
-        Incident Dashboard
-      </Typography>
-      {loading && (
-        <Box sx={{ display: "flex", justifyContent: "center", my: 5 }}>
-          <CircularProgress />
-        </Box>
-      )}
-      {error && <Alert severity="error">{error}</Alert>}
-      {!loading && !error && (
-        <>
-          {incidents.length === 0 ? (
-            <Paper sx={{ p: 4, textAlign: "center", mt: 4 }}>
-              <Typography variant="h6">No Incidents Detected</Typography>
-              <Typography color="textSecondary">
-                Upload a video to begin analysis.
-              </Typography>
-            </Paper>
-          ) : (
-            <Grid container spacing={3}>
-              {incidents.map((incident) => (
-                <Grid item key={incident.id} xs={12} sm={6} md={4} lg={3}>
-                  <IncidentCard incident={incident} />
-                </Grid>
-              ))}
-            </Grid>
-          )}
-        </>
-      )}
-    </Container>
+    <div className="dashboard-page">
+      <header className="dashboard-header">
+        <h1 className="dashboard-title">Incident Dashboard</h1>
+        <Link to="/upload" className="upload-button">
+          <FiPlus />
+          Upload Video
+        </Link>
+      </header>
+
+      <div className="incidents-list">
+        {loading && <p>Loading incidents...</p>}
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        {!loading && !error && incidents.length === 0 && (
+          <p>No incidents found. Upload a video to begin analysis.</p>
+        )}
+        {incidents.map((incident) => (
+          <IncidentCard
+            key={incident.id}
+            id={incident.id}
+            timestamp={new Date(incident.timestamp).toLocaleString()}
+            cameraName={incident.camera_id}
+            imageUrl={incident.thumbnail_url}
+          />
+        ))}
+      </div>
+    </div>
   );
-}
+};
 
 export default DashboardPage;

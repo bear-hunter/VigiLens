@@ -1,64 +1,41 @@
-// src/components/dashboard/IncidentCard.js
+// frontend/src/components/dashboard/IncidentCard.jsx
 import React from "react";
-import {
-  Card,
-  CardContent,
-  CardMedia,
-  Typography,
-  Button,
-  CardActions,
-} from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import VideocamIcon from "@mui/icons-material/Videocam";
+import { Link } from "react-router-dom"; // Import Link
+import "./IncidentCard.css";
+import { BsClock, BsCameraVideo } from "react-icons/bs";
 
-function IncidentCard({ incident }) {
-  // Format timestamp for display
-  const formattedTimestamp = new Date(incident.timestamp).toLocaleString();
-
+const IncidentCard = ({ id, timestamp, cameraName, imageUrl }) => {
   return (
-    <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
-      <CardMedia
-        component="img"
-        height="180"
-        image={incident.thumbnail_url} // URL to the incident thumbnail from the backend
-        alt={`Incident ${incident.id}`}
-        sx={{ objectFit: "cover" }}
-      />
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Typography gutterBottom variant="h5">
-          Incident #{incident.id}
-        </Typography>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ display: "flex", alignItems: "center", mb: 1 }}
-        >
-          <AccessTimeIcon sx={{ mr: 1, fontSize: "1rem" }} />
-          {formattedTimestamp}
-        </Typography>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ display: "flex", alignItems: "center" }}
-        >
-          <VideocamIcon sx={{ mr: 1, fontSize: "1rem" }} />
-          Camera: {incident.camera_id}
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button
-          size="small"
-          color="primary"
-          variant="contained"
-          component={RouterLink}
-          to={`/incident/${incident.id}`}
-        >
-          Review Incident
-        </Button>
-      </CardActions>
-    </Card>
+    // The entire card is a Link component that navigates to the review page
+    <Link to={`/incident/${id}`} className="incident-card-link">
+      <div className="incident-image-placeholder">
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt={`Incident ${id}`}
+            className="incident-image"
+          />
+        ) : (
+          <span>Preview Unavailable</span>
+        )}
+      </div>
+      <div className="incident-content">
+        <h3>Incident #{id}</h3>
+
+        <div className="info-item">
+          <BsClock className="info-icon" />
+          <span>{timestamp}</span>
+        </div>
+
+        <div className="info-item">
+          <BsCameraVideo className="info-icon" />
+          <span>Camera: {cameraName}</span>
+        </div>
+
+        <div className="review-button">REVIEW INCIDENT</div>
+      </div>
+    </Link>
   );
-}
+};
 
 export default IncidentCard;

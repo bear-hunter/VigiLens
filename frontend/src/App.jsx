@@ -1,57 +1,33 @@
-// src/App.js
+// frontend/src/App.jsx
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import {
-  CssBaseline,
-  ThemeProvider,
-  createTheme,
-  Container,
-  Box,
-} from "@mui/material";
-import Navbar from "./components/layout/Navbar";
-import DashboardPage from "./pages/DashboardPage";
-import UploadPage from "./pages/UploadPage";
-import IncidentReviewPage from "./pages/IncidentReviewPage";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-// A professional dark theme for the security dashboard.
-const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-    primary: {
-      main: "#00c853", // A vibrant green for accents
-    },
-    background: {
-      default: "#121212",
-      paper: "#1e1e1e",
-    },
-  },
-  typography: {
-    h4: {
-      fontWeight: 700,
-    },
-    h5: {
-      fontWeight: 600,
-    },
-  },
-});
+// Import your page components
+import DashboardPage from "./pages/DashboardPage.jsx";
+import IncidentReviewPage from "./pages/IncidentReviewPage.jsx";
+import UploadPage from "./pages/UploadPage.jsx";
+
+// Import the Navbar component with the correct extension
+import Navbar from "./components/layout/Navbar.jsx";
+
+// Import a CSS file for the main layout
+import "./App.css";
 
 function App() {
   return (
-    <ThemeProvider theme={darkTheme}>
-      <CssBaseline />
-      <Router>
+    <BrowserRouter>
+      <div className="app-container">
         <Navbar />
-        <Container component="main" maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
-          <Box sx={{ paddingTop: "2rem" }}>
-            <Routes>
-              <Route path="/" element={<DashboardPage />} />
-              <Route path="/upload" element={<UploadPage />} />
-              <Route path="/incident/:id" element={<IncidentReviewPage />} />
-            </Routes>
-          </Box>
-        </Container>
-      </Router>
-    </ThemeProvider>
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={<DashboardPage />} />
+            {/* THIS IS A CRITICAL FIX - USE THE CORRECT PATH */}
+            <Route path="/incident/:id" element={<IncidentReviewPage />} />
+            <Route path="/upload" element={<UploadPage />} />
+          </Routes>
+        </main>
+      </div>
+    </BrowserRouter>
   );
 }
 

@@ -2,22 +2,22 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getIncidentById } from "../services/api";
-import {
-  Container,
-  Typography,
-  CircularProgress,
-  Alert,
-  Paper,
-  Box,
-  Chip,
-} from "@mui/material";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import VideocamIcon from "@mui/icons-material/Videocam";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import VideoPlayer from "../components/review/VideoPlayer";
+import { BsClock, BsCameraVideo, BsQuestionCircle } from "react-icons/bs"; // Using react-icons
+import "./IncidentReviewPage.css"; // We will create this CSS file next
+
+// A simple, native video player component
+const SimpleVideoPlayer = ({ url }) => {
+  if (!url) return <div className="video-placeholder">Loading...</div>;
+  return (
+    <video controls width="100%" autoPlay muted playsInline key={url}>
+      <source src={url} type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  );
+};
 
 function IncidentReviewPage() {
-  const { id } = useParams();
+  const { id } = useParams(); // Gets the ':id' from the URL
   const [incident, setIncident] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -25,6 +25,7 @@ function IncidentReviewPage() {
   useEffect(() => {
     const fetchIncident = async () => {
       try {
+        setLoading(true);
         const response = await getIncidentById(id);
         setIncident(response.data);
       } catch (err) {
@@ -34,66 +35,50 @@ function IncidentReviewPage() {
         setLoading(false);
       }
     };
-    fetchIncident();
+
+    if (id) {
+      fetchIncident();
+    }
   }, [id]);
 
-  if (loading) {
-    return (
-      <Box sx={{ display: "flex", justifyContent: "center", my: 5 }}>
-        <CircularProgress />
-      </Box>
-    );
-  }
-  if (error) {
-    return <Alert severity="error">{error}</Alert>;
-  }
-  if (!incident) {
-    return <Alert severity="info">Incident not found.</Alert>;
-  }
+  if (loading)
+    return <div className="status-message">Loading incident data...</div>;
+  if (error) return <div className="status-message error">{error}</div>;
+  if (!incident)
+    return <div className="status-message">Incident not found.</div>;
 
   const formattedTimestamp = new Date(incident.timestamp).toLocaleString();
 
   return (
-    <Container maxWidth="xl">
-      <Typography variant="h4" gutterBottom>
-        Reviewing Incident #{incident.id}
-      </Typography>
+    <div className="review-page">
+      <h1 className="review-title">Reviewing Incident #{incident.id}</h1>
 
-      <Paper sx={{ p: 3, mb: 4 }}>
-        <Typography variant="h6">Incident Details</Typography>
-        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mt: 2 }}>
-          <Chip
-            icon={<AccessTimeIcon />}
-            label={`Time: ${formattedTimestamp}`}
-          />
-          <Chip
-            icon={<VideocamIcon />}
-            label={`Camera ID: ${incident.camera_id}`}
-          />
-          <Chip
-            icon={<HelpOutlineIcon />}
-            label={`Tracker ID: ${incident.tracker_id}`}
-          />
-        </Box>
-      </Paper>
-
-      <hr />
-
-      {/* Simplified Video Display Section */}
-      <div>
-        <Typography variant="h6" gutterBottom>
-          Original Footage
-        </Typography>
-        <VideoPlayer url={incident.original_clip_url} />
-
-        <br />
-
-        <Typography variant="h6" gutterBottom>
-          AI-Annotated Footage
-        </Typography>
-        <VideoPlayer url={incident.annotated_clip_url} />
+      <div className="details-card">
+        <div className="details-item">
+          <BsClock />
+          <span>{`Time: ${formattedTimestamp}`}</span>
+        </div>
+        <div className="details-item">
+          <BsCameraVideo />
+          <span>{`Camera ID: ${incident.camera_id}`}</span>
+        </div>
+        <div className="details-item">
+          <BsQuestionCircle />
+          <span>{`Tracker ID: ${incident.tracker_id}`}</span>
+        </div>
       </div>
-    </Container>
+
+      <div className="video-grid">
+        <div className="video-container">
+          <h3>Original Footage</h3>
+          <SimpleVideoPlayer url={incident.original_clip_url} />
+        </div>
+        <div className="video-container">
+          <h3>AI-Annotated Footage</h3>
+          <SimpleVideoPlayer url={incident.annotated_clip_url} />
+        </div>
+      </div>
+    </div>
   );
 }
 

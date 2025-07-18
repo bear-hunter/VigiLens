@@ -1,0 +1,77 @@
+/* frontend/src/pages/IncidentReviewPage.css */
+.review-page {
+  padding: 2rem 3rem;
+  color: #e0e0e0;
+}
+
+.review-title {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+}
+
+.details-card {
+  background-color: #2a2a3a;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 3rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.details-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}
+
+.video-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.video-container {
+  background-color: #1c1c1c;
+  padding: 1rem;
+  border-radius: 12px;
+}
+
+.video-container h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.video-placeholder {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a7a7b1;
+  border-radius: 8px;
+}
+
+.status-message {
+  padding: 2rem;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.status-message.error {
+  color: #ff5252;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .video-grid {
+    grid-template-columns: 1fr;
+  }
+}

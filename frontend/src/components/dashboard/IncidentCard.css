@@ -1,0 +1,90 @@
+/* frontend/src/components/dashboard/IncidentCard.css */
+:root {
+  --card-bg: #2a2a3a;
+  --card-text: #e0e0e0;
+  --card-subtext: #a7a7b1;
+  --button-green: #1db954;
+}
+
+/* --- THIS IS THE KEY FIX --- */
+/* The main card element is now a link (<a> tag), not a button */
+.incident-card-link {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  display: flex; /* This enables the horizontal layout */
+  flex-direction: row;
+  align-items: stretch;
+  border: 1px solid transparent;
+  width: 100%;
+  text-align: left;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: none; /* Remove underline from the link */
+}
+
+.incident-card-link:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  border-color: #4a4aff;
+}
+
+.incident-image-placeholder {
+  width: 200px; /* Fixed width for the image container */
+  height: auto;
+  flex-shrink: 0;
+  background-color: #1c1c1c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--card-subtext);
+}
+
+.incident-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.incident-content {
+  padding: 20px;
+  flex-grow: 1; /* Allows this part to take up remaining space */
+  display: flex;
+  flex-direction: column; /* Stacks content vertically inside this box */
+}
+
+.incident-content h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 1.5rem;
+  color: var(--card-text);
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  color: var(--card-subtext);
+  font-size: 0.9rem;
+}
+
+.info-icon {
+  margin-right: 10px;
+  font-size: 1.1rem;
+}
+
+.review-button {
+  background-color: var(--button-green);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+  margin-top: auto; /* Pushes button to the bottom */
+  width: fit-content; /* Makes button only as wide as its content */
+  align-self: flex-start; /* Aligns to the left */
+}

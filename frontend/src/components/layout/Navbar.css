@@ -1,0 +1,88 @@
+/* frontend/src/components/layout/Navbar.css */
+:root {
+  --sidebar-bg: #1e1e2d;
+  --sidebar-text: #a7a7b1;
+  --sidebar-header-text: #ffffff;
+  --active-bg: #4a4aff;
+  --active-text: #ffffff;
+  --logo-bg: #7b4dff;
+  --hover-bg: rgba(255, 255, 255, 0.05);
+}
+
+.navbar {
+  width: 250px;
+  height: 100vh;
+  background-color: var(--sidebar-bg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  color: var(--sidebar-text);
+  border-right: 1px solid #2d2d3f;
+  flex-shrink: 0;
+}
+
+.navbar-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 40px;
+  padding: 0 10px;
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: var(--logo-bg);
+  border-radius: 8px;
+  margin-right: 15px;
+  font-size: 24px;
+  color: white;
+}
+
+.navbar-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--sidebar-header-text);
+}
+
+.nav-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  text-decoration: none;
+  color: var(--sidebar-text);
+  border-radius: 8px;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  font-weight: 500;
+  background-color: transparent;
+}
+
+.nav-link:not(.active):hover {
+  background-color: var(--hover-bg);
+  color: var(--active-text);
+}
+
+.nav-link.active {
+  background-color: var(--active-bg);
+  color: var(--active-text);
+}
+
+.nav-icon {
+  margin-right: 15px;
+  font-size: 20px;
+}
+
+.nav-text {
+  font-size: 16px;
+}
