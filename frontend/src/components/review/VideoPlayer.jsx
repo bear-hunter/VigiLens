@@ -1,35 +1,32 @@
-// src/components/review/VideoPlayer.js
-import React, { forwardRef } from "react";
-import ReactPlayer from "react-player";
-import { Box } from "@mui/material";
+// frontend/src/components/review/VideoPlayer.jsx
+import React from "react";
 
-const VideoPlayer = forwardRef(({ url, onPlay, onPause, onSeek }, ref) => {
+// This is the simplest possible video player component.
+const VideoPlayer = ({ url }) => {
+  if (!url) {
+    return <p>Loading video...</p>;
+  }
+
+  // Adding a timestamp to the URL is a "cache-busting" technique.
+  // It forces the browser to re-request the file every single time.
+  const cacheBustedUrl = `${url}?t=${new Date().getTime()}`;
+
   return (
-    <Box
-      className="player-wrapper"
-      sx={{
-        position: "relative",
-        paddingTop: "56.25%" /* 16:9 Aspect Ratio */,
-      }}
-    >
-      <ReactPlayer
-        ref={ref}
-        className="react-player"
-        url={url}
+    <div>
+      <video
+        key={cacheBustedUrl} // Use the new URL as the key
+        controls
         width="100%"
-        height="100%"
-        controls={true}
-        onPlay={onPlay}
-        onPause={onPause}
-        onSeek={onSeek}
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-        }}
-      />
-    </Box>
+        autoPlay
+        muted
+        playsInline // Important for mobile browsers and some policies
+        crossOrigin="anonymous" // Helps with certain CORS scenarios
+      >
+        <source src={cacheBustedUrl} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
   );
-});
+};
 
 export default VideoPlayer;

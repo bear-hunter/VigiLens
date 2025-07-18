@@ -1,11 +1,10 @@
-// src/pages/IncidentReviewPage.js
-import React, { useState, useEffect, useRef } from "react";
+// frontend/src/pages/IncidentReviewPage.jsx
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getIncidentById } from "../services/api";
 import {
   Container,
   Typography,
-  Grid,
   CircularProgress,
   Alert,
   Paper,
@@ -23,10 +22,6 @@ function IncidentReviewPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Refs for controlling video players simultaneously
-  const player1Ref = useRef(null);
-  const player2Ref = useRef(null);
-
   useEffect(() => {
     const fetchIncident = async () => {
       try {
@@ -41,24 +36,6 @@ function IncidentReviewPage() {
     };
     fetchIncident();
   }, [id]);
-
-  // Handlers for synchronized playback
-  const handlePlay = () => {
-    player1Ref.current?.seekTo(player1Ref.current.getCurrentTime(), "seconds");
-    player2Ref.current?.seekTo(player1Ref.current.getCurrentTime(), "seconds");
-    player1Ref.current?.getInternalPlayer()?.play();
-    player2Ref.current?.getInternalPlayer()?.play();
-  };
-
-  const handlePause = () => {
-    player1Ref.current?.getInternalPlayer()?.pause();
-    player2Ref.current?.getInternalPlayer()?.pause();
-  };
-
-  const handleSeek = (seconds) => {
-    player1Ref.current?.seekTo(seconds, "seconds");
-    player2Ref.current?.seekTo(seconds, "seconds");
-  };
 
   if (loading) {
     return (
@@ -100,32 +77,22 @@ function IncidentReviewPage() {
         </Box>
       </Paper>
 
-      <Grid container spacing={4}>
-        <Grid item xs={12} md={6}>
-          <Typography variant="h6" gutterBottom align="center">
-            Original Footage
-          </Typography>
-          <VideoPlayer
-            ref={player1Ref}
-            url={incident.original_clip_url}
-            onPlay={handlePlay}
-            onPause={handlePause}
-            onSeek={handleSeek}
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Typography variant="h6" gutterBottom align="center">
-            AI-Annotated Footage
-          </Typography>
-          <VideoPlayer
-            ref={player2Ref}
-            url={incident.annotated_clip_url}
-            onPlay={handlePlay}
-            onPause={handlePause}
-            onSeek={handleSeek}
-          />
-        </Grid>
-      </Grid>
+      <hr />
+
+      {/* Simplified Video Display Section */}
+      <div>
+        <Typography variant="h6" gutterBottom>
+          Original Footage
+        </Typography>
+        <VideoPlayer url={incident.original_clip_url} />
+
+        <br />
+
+        <Typography variant="h6" gutterBottom>
+          AI-Annotated Footage
+        </Typography>
+        <VideoPlayer url={incident.annotated_clip_url} />
+      </div>
     </Container>
   );
 }
